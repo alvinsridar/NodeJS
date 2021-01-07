@@ -1,0 +1,7 @@
+{
+  "name": "2021-01-05",
+  "main": "app/greeting.js",
+  "scripts": {
+    "start": "node ./app/greeting.js"
+  }
+}
