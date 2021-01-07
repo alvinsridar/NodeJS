@@ -1,6 +1,5 @@
 const fs = require('fs');
 const chalk = require('chalk');
-const mergeElements = require('./mergeElements');
 
 function findAndChalkRed(stringToFind, contentPath) {
 
@@ -22,7 +21,7 @@ function findAndChalkRed(stringToFind, contentPath) {
                     //if array element = stringToFind case-insensitive, return chalked element
                 }
             );
-            console.log(mergeElements(chalkedText));
+            console.log(chalkedText.join(''));
         }
     );
 };
