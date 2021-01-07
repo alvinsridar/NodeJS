@@ -14,8 +14,7 @@ function findAndChalkRed(stringToFind, contentPath) {
 
             const chalkedText = splitText.map(
                 (char) => {
-                    return char === `${stringToFind}` ? chalk.red(char)
-                        : char === `${stringToFindUpper}` ? chalk.red(char)
+                    return char === `${stringToFindUpper}` ? chalk.red(char)
                             : char === `${stringToFindLower}` ? chalk.red(char)
                                 : char;
                     //if array element = stringToFind case-insensitive, return chalked element
