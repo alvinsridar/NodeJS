@@ -1,0 +1,5 @@
+ubuntu for windows
+-closer to actual server environment
+
+npm install --global cross-env
+-will be useful for future classes
