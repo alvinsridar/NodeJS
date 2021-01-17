@@ -1,34 +1,20 @@
-const readline = require('readline');
-const fs = require('fs');
+const regex = new RegExp('M','ig');
+const chalk = require('chalk');
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+const text = 'LoreM ipsum dolor sit aMet.';
 
-//create user object with empty values to hold input
-const user = {};
-let { name, age, gender } = user;
+const replaced = text.replace(regex,'splitMarker');
+const matched = [...text.match(regex),''];
+const splited = replaced.split('splitMarker');
 
-//get user input save to corresponding property
-rl.question('Enter name: ', nameInput => {
-    name = nameInput;
-    console.log(`User's name is ${name}.`);
+const chalkedString = matched.map(str => {
+    return chalk.red(str)
+})
 
-    rl.question('Enter age: ', ageInput => {
-        age = ageInput;
-        console.log(`User's age is ${age}.`);
+let stitched = [];
 
-        rl.question('Enter gender: ', genderInput => {
-            gender = genderInput;
-            console.log(`User's gender is ${gender}.`);
+for (let i = 0; i < splited.length; i++) {
+    stitched = stitched + splited[i] + chalkedString[i];
+}
 
-            fs.writeFile('user.json', JSON.stringify(user), (err) => {
-                if (err) throw err;
-                console.log('User data has been saved.')
-            });
-
-            rl.close();
-        });
-    });
-});
+console.log(stitched);
