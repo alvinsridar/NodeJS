@@ -6,7 +6,7 @@ const fs = require('fs/promises');
         const textB = (await fs.readFile('./b.txt')).toString().toLowerCase();
         const textC = (await fs.readFile('./c.txt')).toString().split('').reverse().join('');
         const textD = textA + textB + textC;
-        await fs.writeFile('./d.txt', textD.toString());
+        await fs.writeFile('./d.txt', textD);
         console.log('File written.');
     } catch (err) {
         console.error(err);
