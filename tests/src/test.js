@@ -1,20 +1,23 @@
-const regex = new RegExp('M','ig');
-const chalk = require('chalk');
+const fs = require('fs');
 
-const text = 'LoreM ipsum dolor sit aMet.';
+fs.readFile('./testContent1.txt', (err, data) => {
+    const text1 = data.toString();
+    //console.log(text1);
 
-const replaced = text.replace(regex,'splitMarker');
-const matched = [...text.match(regex),''];
-const splited = replaced.split('splitMarker');
+    fs.readFile('./testContent2.txt', (err, data) => {
+        const text2 = data.toString();
+        //console.log(text2);
 
-const chalkedString = matched.map(str => {
-    return chalk.red(str)
-})
+        fs.readFile('./testContent3.txt', (err, data) => {
+            const text3 = data.toString();
+            //console.log(text3);
 
-let stitched = [];
+            compiledText = text1.concat(text2, text3);
 
-for (let i = 0; i < splited.length; i++) {
-    stitched = stitched + splited[i] + chalkedString[i];
-}
+            fs.writeFile('./compiledText.txt', compiledText, (err) => {
+               console.log('Compiled text saved.') ;
+            });
+        });
+    });
+});
 
-console.log(stitched);
