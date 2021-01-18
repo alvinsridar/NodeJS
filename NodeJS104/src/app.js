@@ -8,4 +8,5 @@ const fs = require('fs/promises');
     const textD = textA + textB + textC;
 
     await fs.writeFile('./d.txt', textD.toString());
+    console.log(textD);
 })();
