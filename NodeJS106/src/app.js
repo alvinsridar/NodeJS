@@ -44,7 +44,13 @@ app.post('/user', express.json(), async(req, res) => {
 });
 
 //listen to user input port or default to 3000
-process.argv.splice(0, 2)
+
+//try not to use splice, especially with global object or system data such as process.argv
+//It is better to assign it into another variable and modify it 
+//rather than touching the original object
+
+let argvInput = process.argv;
+argvInput.splice(0, 2)
 let selectPort;
-process.argv[0] === undefined ? selectPort = 3000 : selectPort = process.argv[0].split('=')[1];
+argvInput[0] === undefined ? selectPort = 3000 : selectPort = argvInput[0].split('=')[1];
 app.listen(selectPort, console.log(`Server started on port ${selectPort}`));
