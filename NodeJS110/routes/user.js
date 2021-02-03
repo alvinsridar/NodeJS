@@ -86,7 +86,7 @@ router.put('/user/:username', express.json(), async (req, res) => {
                         //invalid token
                         throw Error('Invalid token.');
                     } else {
-                        //valid token, respond with user data if user exists and matches req.params
+                        //valid token, if user exists and matches req.params, check for updated user data
                         const user = await User.findById(decodedToken.payload);
                         if (!user || user.username !== req.params.username) {
                             throw Error('User not found.');
