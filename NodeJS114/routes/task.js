@@ -7,10 +7,10 @@ const router = express.Router();
 
 //middleware for jwt.verify on all task routes
 router.use('/task', express.json(), (req, res, next) => {
-    if (req.body.token) {
-        jwt.verify(req.body.token, process.env.SECRET_KEY, (err, decodedToken) => {
+    if (req.get('Authorization')) {
+        jwt.verify(req.get('Authorization'), process.env.SECRET_KEY, (err, decodedToken) => {
             if (err) {
-                throw Error('Invalid token.');    
+                throw Error('Invalid token.');
             } else {
                 req.context = decodedToken;
                 next();
@@ -19,6 +19,15 @@ router.use('/task', express.json(), (req, res, next) => {
     } else {
         throw Error('No token provided.');
     }
+})
+
+//replace req.context.payload with empty string
+//for task.test.js
+router.use('/task', express.json(), (req, res, next) => {
+    if (!req.context) {
+        req.context = { payload: '' }
+    };
+    next()
 })
 
 //CREATE a new task
@@ -37,12 +46,18 @@ router.post('/task', express.json(), async (req, res, next) => {
 //READ a task by id
 router.get('/task/:id', express.json(), async (req, res, next) => {
     try {
-        const task = await Task.findById(req.params.id)
+        const task = await Task.findOne({ _id: req.params.id, userId: req.context.payload })
+
         if (!task) {
             res.status(400).send(`No task with id:${req.params.id} found.`);
             return;
+        } else if (task && (task.userId !== userId)) {
+            res.status(400).send(`No task with id:${req.params.id} found.`);
+            return;
+        } else {
+            res.status(200).send(task);
         }
-        res.status(200).send(task);
+
     } catch (err) {
         next(err);
     }
@@ -51,7 +66,7 @@ router.get('/task/:id', express.json(), async (req, res, next) => {
 //READ all tasks
 router.get('/task', async (req, res, next) => {
     try {
-        const tasks = await Task.find();
+        const tasks = await Task.find({ userId: req.context.payload });
         if (tasks.length === 0) {
             res.status(200).send('No tasks in database.');
             return;
@@ -69,6 +84,9 @@ router.put('/task/:id', express.json(), async (req, res, next) => {
         const task = await Task.findById(req.params.id);
 
         if (!task) {
+            res.status(400).send(`No task with id:${req.params.id} found.`);
+            return;
+        } else if (task && (task.userId !== req.context.payload)) {
             res.status(400).send(`No task with id:${req.params.id} found.`);
             return;
         };
@@ -109,8 +127,9 @@ router.delete('/task/:id', async (req, res, next) => {
 //error handling middleware - router group level
 router.use((err, req, res, next) => {
     console.error(err.message);
+    console.error(err);
     if (err.message === 'Invalid token.' || 'No token provided.') {
-        res.status(401).send({err: err.message});
+        res.status(401).send({ err: err.message });
         return;
     }
     res.status(400).send({ err: err.message });

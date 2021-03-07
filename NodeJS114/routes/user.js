@@ -24,8 +24,7 @@ router.post('/user/signup', express.json(), async (req, res, next) => {
         const payload = user._id;
         const token = jwt.sign({ payload }, process.env.SECRET_KEY, { expiresIn: '1h' });
 
-        //send email
-
+        //set up email options
         const mailOptions = {
             user: process.env.MAIL_USER,
             pass: process.env.MAIL_PASS,
@@ -34,9 +33,11 @@ router.post('/user/signup', express.json(), async (req, res, next) => {
             subject: 'New user signup',
             text: `Username:${req.body.username} \n UserID: ${payload}`
         };
-        emailer(mailOptions);
 
-        res.status(201).send(token);
+        //send email
+        emailer.sendEmail(mailOptions);
+
+        res.status(201).send({token});
     } catch (err) {
         next(err);
     }
@@ -54,7 +55,7 @@ router.post('/user/login', express.json(), async (req, res, next) => {
             const payload = user._id;
             //secretkey should come from env
             const token = jwt.sign({ payload }, process.env.SECRET_KEY, { expiresIn: '1h' });
-            res.status(200).send(token);
+            res.status(200).send({token});
         };
     } catch (err) {
         next(err);

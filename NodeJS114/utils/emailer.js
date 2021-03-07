@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 
 //send email using sendinblue
 
-module.exports = async (mailOptions) => {
+async function sendEmail (mailOptions) {
 
     try {
         const transporter = nodemailer.createTransport({
@@ -26,3 +26,5 @@ module.exports = async (mailOptions) => {
         console.error(err);
     }
 }
+
+module.exports = {sendEmail}
